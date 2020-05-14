@@ -7,20 +7,29 @@ accuracy <- function(x){
   return(output)
 }
 performBayesWalc <- function (dataset){
+  smp_size <- floor(0.7 * nrow(dataset))
+  train_ind <- sample(seq_len(nrow(dataset)), size = smp_size)
   ind <- which(colnames(dataset)=="Walc")
   dataset[,ind] <- as.factor(dataset[,ind])
-  model <- naiveBayes(Walc ~.,data = dataset)
-  pred <- predict(model, dataset[,-ind])
-  tb <- table(pred, dataset$Walc)
-  accBayesWalc<- accuracy(tb)
-  return(accBayesWalc)
+  train <- dataset[train_ind, ]
+  test <- dataset[-train_ind, ]
+  model <- naiveBayes(Walc ~.,data = train)
+  pred <- predict(model, test)
+  tb <- table(pred, test$Walc)
+  acc <- accuracy(tb)
+  return(acc)
 }
 performBayesDalc <- function (dataset){
+  smp_size <- floor(0.7 * nrow(dataset))
+  set.seed(123)
+  train_ind <- sample(seq_len(nrow(dataset)), size = smp_size)
   ind <- which(colnames(dataset)=="Dalc")
   dataset[,ind] <- as.factor(dataset[,ind])
-  model <- naiveBayes(Dalc ~.,data = dataset)
-  pred <- predict(model, dataset[,-ind])
-  tb <- table(pred, dataset$Dalc)
-  accBayesDalc<- accuracy(tb)
-  return(accBayesDalc)
+  train <- dataset[train_ind, ]
+  test <- dataset[-train_ind, ]
+  model <- naiveBayes(Dalc ~.,data = train)
+  pred <- predict(model, test)
+  tb <- table(pred, test$Dalc)
+  acc<- accuracy(tb)
+  return(acc)
 }
