@@ -14,3 +14,27 @@ d3<-merge(d2,d1,by=c("school","sex","age","address","famsize","Pstatus","Medu","
 #"paid", "falitures", "absences" - zalezne od kursu
 return(d3)
 }
+fillNAs <- function (dataset){
+  for (i in 1:nrow(dataset)){
+    if(is.na(dataset$G1.x[i])){
+      dataset$G1.x[i] <- dataset$G1.y[i]
+      dataset$G2.x[i] <- dataset$G2.y[i]
+      dataset$G3.x[i] <- dataset$G3.y[i]
+      dataset$failures.x[i] <- dataset$failures.y[i]
+      dataset$paid.x[i] <- dataset$paid.y[i]
+      dataset$absences.x[i] <- dataset$absences.y[i]
+    }
+  }
+  for (i in 1:nrow(dataset)){
+    if(is.na(dataset$G1.y[i])){
+      dataset$G1.y[i] <- dataset$G1.x[i]
+      dataset$G2.y[i] <- dataset$G2.x[i]
+      dataset$G3.y[i] <- dataset$G3.x[i]
+      dataset$failures.y[i] <- dataset$failures.x[i]
+      dataset$paid.y[i] <- dataset$paid.x[i]
+      dataset$absences.y[i] <- dataset$absences.x[i]
+    }
+
+  }
+  return(dataset)
+}

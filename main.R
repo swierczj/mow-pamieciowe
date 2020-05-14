@@ -12,61 +12,41 @@ library(ramify)
 source("merge.R")
 source("bayes.R")
 source("knnFunc.R")
+source("svmFunc.R")
 source("plotting.R")
-fillNAs <- function (dataset){
-  for (i in 1:nrow(dataset)){
-    if(is.na(dataset$G1.x[i])){
-      dataset$G1.x[i] <- dataset$G1.y[i]
-      dataset$G2.x[i] <- dataset$G2.y[i]
-      dataset$G3.x[i] <- dataset$G3.y[i]
-      dataset$failures.x[i] <- dataset$failures.y[i]
-      dataset$paid.x[i] <- dataset$paid.y[i]
-      dataset$absences.x[i] <- dataset$absences.y[i]
-    }
-  }
-  for (i in 1:nrow(dataset)){
-    if(is.na(dataset$G1.y[i])){
-      dataset$G1.y[i] <- dataset$G1.x[i]
-      dataset$G2.y[i] <- dataset$G2.x[i]
-      dataset$G3.y[i] <- dataset$G3.x[i]
-      dataset$failures.y[i] <- dataset$failures.x[i]
-      dataset$paid.y[i] <- dataset$paid.x[i]
-      dataset$absences.y[i] <- dataset$absences.x[i]
-    }
-
-  }
-  return(dataset)
-}
-
 
 d3<- mergeDataFromFiles("student-mat.csv","student-por.csv")
 d3<- fillNAs(d3)
 
+# Bayes
 accBayesWalc <- performBayesWalc(d3)
 accBayesDalc <- performBayesDalc(d3)
-accBayesWalc
-accBayesDalc
-acc <- performKNNChangingK(50,20,d3,"Walc")
-outputWalc <- colMeans(acc)
-acc <- performKNNChangingK(20,20,d3,"Dalc")
-outputDalc <- colMeans(acc)
+
+
+# SVM
+kernels <- c("linear","polynomial","sigmoid","radial")
+outputWalcSVM <- performSVMWalcForKernels(d3,kernels)
+outputDalcSVM <- performSVMDalcForKernels(d3,kernels)
+ker <- as.factor(kernels)
+plotResultsVerticallySVM(ker,outputWalcSVM,ker,outputDalcSVM,
+                      accBayesWalc,accBayesDalc, "Kernel Type")
+
+# KNN
+outputWalc <- performKNNChangingK(50,d3,"Walc")
+outputDalc <- performKNNChangingK(20,d3,"Dalc")
 NumberOfNeighboursWalc<- linspace(1,length(outputWalc),length(outputWalc))
 NumberOfNeighboursDalc<- linspace(1,length(outputDalc),length(outputDalc))
-plotResultsVertically(NumberOfNeighboursWalc,outputWalc,NumberOfNeighboursDalc, outputDalc,
-                      accBayesWalc,accBayesDalc,"Number of neighbours","Number of neighbours")
+plotResultsVerticallyKNN(NumberOfNeighboursWalc,outputWalc,NumberOfNeighboursDalc, outputDalc,
+                      accBayesWalc,accBayesDalc, "Number of neighbours")
 
 pValues <-c(0.5, 1, 1.5, 2, 2.5, 3)
 
-acc <- performKNNChangingP(10,2,d3,"Walc",vectorOfP = pValues)
-outputWalcP <- colMeans(acc)
-acc <- performKNNChangingP(5,2,d3,"Dalc",vectorOfP = pValues)
-outputDalcP <- colMeans(acc)
+outputWalcP <- performKNNChangingP(10,d3,"Walc",vectorOfP = pValues)
+outputDalcP <- performKNNChangingP(5,d3,"Dalc",vectorOfP = pValues)
 
-plotResultsVertically(pValues,outputWalcP,pValues,outputDalcP,
-                      accBayesWalc,accBayesDalc,"p parametr value", "p parametr value")
+plotResultsVerticallyKNN(pValues,outputWalcP,pValues,outputDalcP,
+                      accBayesWalc,accBayesDalc,"p parametr value")
 
-plotResultsInBox(NumberOfNeighboursWalc,outputWalc,NumberOfNeighboursDalc, outputDalc,
-                 pValues,outputWalcP,pValues,outputDalcP,'No of neighbours',
-                 'No of neighbours','p','p')
+# TODO: KNN for window
 
 rm(list = ls())
