@@ -17,6 +17,10 @@ performBayesWalc <- function (dataset){
   pred <- predict(model, test)
   tb <- table(pred, test$Walc)
   acc <- accuracy(tb)
+  library(pROC)
+  y_pred<-as.ordered(pred)
+  auc <- multiclass.roc(response = test$Walc, predictor = y_pred,direction = "<")
+  print(auc)
   return(acc)
 }
 performBayesDalc <- function (dataset){
@@ -30,6 +34,9 @@ performBayesDalc <- function (dataset){
   model <- naiveBayes(Dalc ~.,data = train)
   pred <- predict(model, test)
   tb <- table(pred, test$Dalc)
+  y_pred<-as.ordered(pred)
+  auc <- multiclass.roc(response = test$Dalc, predictor = y_pred,direction = "<")
+  print(auc)
   acc<- accuracy(tb)
   return(acc)
 }

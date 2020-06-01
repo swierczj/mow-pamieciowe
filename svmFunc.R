@@ -7,6 +7,12 @@ accuracy <- function(x){
   output<-sum(diag(x)/(sum(rowSums(x)))) * 100
   return(output)
 }
+printAUC <- function (pred,testClass){
+  y_pred<-as.ordered(pred)
+  auc <- multiclass.roc(response = testClass, predictor = y_pred,direction = "<")
+  print(auc)
+}
+
 splitIntoTrainAndTest <- function (dataset,ratio){
   smp_size <- floor(ratio * nrow(dataset))
   set.seed(123)
@@ -31,8 +37,8 @@ performSVMWalcForKernels <- function (dataset,kernels){
       svmModel <- svm(Walc~.,data = train,kernel = kernels[k])
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Walc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Walc)
   }
   return(acc)
 }
@@ -51,8 +57,8 @@ performSVMWalcForPoliDegree <- function (dataset,degrees){
       svmModel <- svm(Walc~.,data = train,kernel = "polynomial", degree = degrees[k] )
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Walc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Walc)
   }
   return(acc)
 }
@@ -70,8 +76,8 @@ performSVMDalcForPoliDegree <- function (dataset,degrees){
       svmModel <- svm(Dalc~.,data = train,kernel = "polynomial", degree = degrees[k] )
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Dalc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Dalc)
   }
   return(acc)
 }
@@ -90,8 +96,8 @@ performSVMWalcForCost <- function (dataset,costs,kernel){
       svmModel <- svm(Walc~.,data = train,kernel = kernel,  cost = costs[k] )
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Walc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Walc)
   }
   return(acc)
 }
@@ -109,8 +115,8 @@ performSVMDalcForCost <- function (dataset, costs, kernel){
       svmModel <- svm(Dalc~.,data = train,kernel = kernel, cost = costs[k] )
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Dalc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Dalc)
   }
   return(acc)
 }
@@ -128,8 +134,8 @@ performSVMDalcForKernels <- function (dataset,kernels){
       svmModel <- svm(Dalc~.,data = train,kernel = kernels[k])
       pred <- predict(svmModel,test[,-ind])
       x <- table(pred, test$Dalc)
-      output<-sum(diag(x)/(sum(rowSums(x)))) * 100
-      acc[k]<-output
+      acc[k]<-accuracy(x)
+      printAUC(pred = pred, testClass = test$Dalc)
   }
   return(acc)
 }

@@ -6,6 +6,12 @@ accuracy <- function(x){
   output<-sum(diag(x)/(sum(rowSums(x)))) * 100
   return(output)
 }
+printAUC <- function (pred,testClass){
+  y_pred<-as.ordered(pred)
+  auc <- multiclass.roc(response = testClass, predictor = y_pred,direction = "<")
+  print(auc)
+}
+
 performKNNChangingK <- function (maxKNumber,dataset,NameOfClassToPredict){
   #Switch all to numeric
   for(i in 1:ncol(dataset)){
@@ -37,6 +43,7 @@ performKNNChangingK <- function (maxKNumber,dataset,NameOfClassToPredict){
       }
       predicted <- knn(train[,-ind],test[,-ind],cl=train[,ind],k=knum)
       tb <- table(predicted,test[,ind])
+      printAUC(pred = predicted, testClass = test[,ind])
       tempAcc <- accuracy(tb)
       acc[knum] <- tempAcc
     if (brokenLoop)
@@ -71,6 +78,7 @@ performKNNChangingP<- function (K,dataset,NameOfClassToPredict,vectorOfP){
       }
       predicted <- knnVCN(train[,-ind],train[,ind],test[,-ind],K=k,method = "minkowski",p =p[i])
       tb <- table(predicted$TstXIBelong,test[,ind])
+      printAUC(pred = predicted$TstXIBelong, testClass = test[,ind])
       tempAcc <- accuracy(tb)
       acc[i] <- tempAcc
   }

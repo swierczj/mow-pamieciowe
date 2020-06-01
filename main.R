@@ -9,6 +9,8 @@ library(pROC)
 library(e1071)
 library(ramify)
 # Create hexbin object and plot
+rm(list = ls())
+
 source("merge.R")
 source("bayes.R")
 source("knnFunc.R")
@@ -39,7 +41,7 @@ plotResultsVerticallySVMNumeric(costs,outputWalcSVMCost,costs,outputDalcSVMCost,
                       accBayesWalc,accBayesDalc, c("Cost Value with kernel",kernels[k]))
 }
 # poly degree
-degrees <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+degrees <- c(1,2,3,4,5,6,7,8,9,10)
 outputWalcSVMPoly <- performSVMWalcForPoliDegree(d3,degrees)
 outputDalcSVMPoly <- performSVMDalcForPoliDegree(d3,degrees)
 plotResultsVerticallySVMNumeric(degrees,outputWalcSVMPoly,degrees,outputDalcSVMPoly,
