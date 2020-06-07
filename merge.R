@@ -11,7 +11,7 @@ d2<-read.table(file2,sep = ',',header=TRUE)
 d3<-merge(d2,d1,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","guardian",
                     "nursery","studytime","famsup","schoolsup","activities","higher","internet",
                     "traveltime","romantic","famrel","freetime","goout","Dalc","Walc","health"),all=TRUE)
-#"paid", "falitures", "absences" - zalezne od kursu
+#"paid", "failures", "absences" - zalezne od kursu
 return(d3)
 }
 fillNAs <- function (dataset){
@@ -38,3 +38,10 @@ fillNAs <- function (dataset){
   }
   return(dataset)
 }
+
+dropDimensions <- function (dataset,columnsToDrop){
+  drops <- columnsToDrop
+  newDF <-  dataset[ , !(names(dataset) %in% drops)]
+  return(newDF)
+}
+
