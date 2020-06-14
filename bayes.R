@@ -2,6 +2,8 @@
 # Objective : TODO
 # Created by: jeczm
 # Created on: 01.05.2020
+
+#acc based on confusion matrix
 accuracy <- function(x){
   output<-sum(diag(x)/(sum(rowSums(x)))) * 100
   return(output)

@@ -85,7 +85,7 @@ performSVMDalcForPoliDegree <- function (dataset,degrees){
 performSVMWalcForCost <- function (dataset,costs,kernel){
   acc <- matrix(0,ncol = 1, nrow = length(costs))
   for(k in 1:length(costs)){
-      print(c("Calculating Dalc using SVM for ",costs[k]," cost of constraints violation ->",kernel))
+      print(c("Calculating Walc using SVM for ",costs[k]," cost of constraints violation ->",kernel))
       ind <- which(colnames(dataset)=='Walc')
       dataset[,ind] <- as.factor(dataset[,ind])
       smp_size <- floor(0.7 * nrow(dataset))

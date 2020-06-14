@@ -24,7 +24,6 @@ d3<- fillNAs(d3)
 accBayesWalc <- performBayesWalc(d3)
 accBayesDalc <- performBayesDalc(d3)
 
-
 ####################################################### SVM ############################################################
 kernels <- c("linear","polynomial","sigmoid","radial")
 outputWalcSVM <- performSVMWalcForKernels(d3,kernels)
@@ -63,9 +62,14 @@ outputDalcP <- performKNNChangingP(5,d3,"Dalc",vectorOfP = pValues)
 
 plotResultsVerticallyKNN(pValues,outputWalcP,pValues,outputDalcP,
                       accBayesWalc,accBayesDalc,"p parametr value")
-
-# TODO: KNN for window
-
+# Sliding window KNN
+percentage_padding <- c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0)
+walcResultSlidingWindowKNN <- performKNNSlidingWindow(d3, "Walc", percentage_padding)
+#walcSlidingWindowStage <- linspace(1, length(walcResultSlidingWindowKNN), length(walcResultSlidingWindowKNN))
+dalcResultSlidingWindowKNN <- performKNNSlidingWindow(d3, "Dalc", percentage_padding)
+#dalcSlidingWindowStage <- linspace(1, length(dalcResultSlidingWindowKNN), length(dalcResultSlidingWindowKNN))
+plotResultsVerticallyKNN(percentage_padding, walcResultSlidingWindowKNN, percentage_padding, dalcResultSlidingWindowKNN,
+                         accBayesWalc, accBayesDalc, "Padding percentage")
 
 ########################################################################################################################
 ################################################ Less dimensions #######################################################
@@ -153,5 +157,15 @@ outputDalcP <- performKNNChangingP(5,d4,"Dalc",vectorOfP = pValues)
 
 plotResultsVerticallyKNN(pValues,outputWalcP,pValues,outputDalcP,
                       accBayesWalc,accBayesDalc,"p parametr value")
+
+# Sliding window
+percentage_padding <- c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0)
+
+walcResultSlidingWindowKNN <- performKNNSlidingWindow(d4, "Walc", percentage_padding)
+#walcPaddingPerc <- linspace(1, length(walcResultSlidingWindowKNN), length(walcResultSlidingWindowKNN))
+dalcResultSlidingWindowKNN <- performKNNSlidingWindow(d4, "Dalc", percentage_padding)
+#dalcPaddingPerc <- linspace(1, length(dalcResultSlidingWindowKNN), length(dalcResultSlidingWindowKNN))
+plotResultsVerticallyKNN(percentage_padding, walcResultSlidingWindowKNN, percentage_padding, dalcResultSlidingWindowKNN,
+                         accBayesWalc, accBayesDalc, "Padding percentage")
 
 rm(list = ls())
